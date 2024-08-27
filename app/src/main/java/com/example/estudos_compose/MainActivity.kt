@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -47,12 +48,15 @@ import com.example.estudos_compose.ui.theme.EstudoscomposeTheme
 import com.example.estudos_compose.ui.theme.Typography
 
 class MainActivity : ComponentActivity() {
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
     setContent {
       EstudoscomposeTheme {
-        Surface { MainScreen() }
+        Surface {
+          MainScreen()
+        }
       }
     }
   }
@@ -68,6 +72,7 @@ fun ClickCounter(clicks: Int, onClick: () -> Unit) {
 @SuppressLint("AutoboxingStateCreation")
 @Composable
 fun MainScreen() {
+
   Column(
     modifier = Modifier.fillMaxSize(),
     verticalArrangement = Arrangement.Center,
@@ -78,11 +83,15 @@ fun MainScreen() {
       clicks++
     }
     HelloContent()
+
   }
 }
 
 @Composable
 fun HelloContent() {
+
+  val context = LocalContext.current
+
   Column(modifier = Modifier.padding(16.dp)) {
     var name by remember { mutableStateOf("") }
     if (name.isNotEmpty()) {
@@ -97,6 +106,12 @@ fun HelloContent() {
       onValueChange = { name = it },
       label = { Text("Name") }
     )
+    Button(onClick = {
+      val intent = Intent(context, ListActivity::class.java)
+      context.startActivity(intent)
+    }) {
+      Text(text = "Next")
+    }
   }
 }
 
