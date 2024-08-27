@@ -1,5 +1,7 @@
 package com.example.estudos_compose
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -21,10 +23,16 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import com.example.estudos_compose.ui.theme.EstudoscomposeTheme
 import com.example.estudos_compose.ui.theme.Typography
 
@@ -50,7 +59,50 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
+fun ClickCounter(clicks: Int, onClick: () -> Unit) {
+  Button(onClick = onClick) {
+    Text("I've been clicked $clicks times")
+  }
+}
+
+@SuppressLint("AutoboxingStateCreation")
+@Composable
 fun MainScreen() {
+  Column(
+    modifier = Modifier.fillMaxSize(),
+    verticalArrangement = Arrangement.Center,
+    horizontalAlignment = Alignment.CenterHorizontally
+  ) {
+    var clicks by remember { mutableStateOf(0) }
+    ClickCounter(clicks = clicks) {
+      clicks++
+    }
+    HelloContent()
+  }
+}
+
+@Composable
+fun HelloContent() {
+  Column(modifier = Modifier.padding(16.dp)) {
+    var name by remember { mutableStateOf("") }
+    if (name.isNotEmpty()) {
+      Text(
+        text = "Hello, $name!",
+        modifier = Modifier.padding(bottom = 8.dp),
+        style = MaterialTheme.typography.bodyMedium
+      )
+    }
+    OutlinedTextField(
+      value = name,
+      onValueChange = { name = it },
+      label = { Text("Name") }
+    )
+  }
+}
+
+
+@Composable
+fun StarWarsScreen() {
   Row(
     modifier = Modifier
       .fillMaxSize()
@@ -59,11 +111,17 @@ fun MainScreen() {
     horizontalArrangement = Arrangement.Center,
   ) {
     Column {
-      StarWarsCard(starWars = StarWars("StarWars", "Luke Skywalker"), modifier = Modifier.background(Color.White))
-      StarWarsCard(starWars = StarWars("StarWars", "Leia Organa"), modifier = Modifier.background(Color.Gray))
+      StarWarsCard(
+        starWars = StarWars("StarWars", "Luke Skywalker"),
+        modifier = Modifier.background(Color.White)
+      )
+      StarWarsCard(
+        starWars = StarWars("StarWars", "Leia Organa"),
+        modifier = Modifier.background(Color.Gray)
+      )
 
     }
- }
+  }
 }
 
 data class StarWars(
@@ -73,7 +131,8 @@ data class StarWars(
 
 @Composable
 fun StarWarsCard(starWars: StarWars, modifier: Modifier = Modifier) {
-  Row (verticalAlignment = Alignment.CenterVertically,
+  Row(
+    verticalAlignment = Alignment.CenterVertically,
     modifier = modifier
   )
   {
